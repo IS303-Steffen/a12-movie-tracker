@@ -18,7 +18,7 @@ jobs:
       with:
         python-version: 3.12.6
     - name: Install dependencies
-      run: python -m pip install --upgrade pip && pip install pandas openpyxl pytest pytest-subtests 'black<=22.3.0' 'tomli>=1.1.0' 'timeout-decorator~=0.5.0'
+      run: python -m pip install --upgrade pip && pip install pandas openpyxl peewee pytest pytest-subtests 'black<=22.3.0' 'tomli>=1.1.0' 'timeout-decorator~=0.5.0'
     - name: tests/test_01_input_prompts.py
       id: tests-test-01-input-prompts-py
       uses: classroom-resources/autograding-command-grader@v1

@@ -38,7 +38,7 @@ def generate_classroom_yml(python_version='3.12.6'):
     # Add install dependencies step
     job['steps'].append({
         'name': 'Install dependencies',
-        'run': 'python -m pip install --upgrade pip && pip install pandas openpyxl pytest pytest-subtests \'black<=22.3.0\' \'tomli>=1.1.0\' \'timeout-decorator~=0.5.0\''
+        'run': 'python -m pip install --upgrade pip && pip install pandas openpyxl peewee pytest pytest-subtests \'black<=22.3.0\' \'tomli>=1.1.0\' \'timeout-decorator~=0.5.0\''
     })
 
     # Add test steps dynamically based on the test_*.py files in the tests/ folder
