@@ -1,5 +1,5 @@
 max_score = 15  # This value is pulled by yml_generator.py to assign a score to this test.
-from conftest import normalize_text, load_student_code, format_error_message, exception_message_for_students, round_match, get_similarity_feedback, delete_sqlite_db
+from conftest import normalize_text, load_student_code, format_error_message, exception_message_for_students, round_match, get_similarity_feedback, clear_database
 import re
 
 # Checks if the expected printed messages actually appear, but doesn't check for specific inputs or correct calculations.
@@ -12,7 +12,7 @@ def test_02_printed_messages(current_test_name, input_test_cases):
             return  # Technically not needed, as exception_message_for_students throws a pytest.fail Error, but included for clarity that this ends the test.
 
         for input_test_case in input_test_cases:
-            delete_sqlite_db()
+            clear_database('movie')
 
             inputs = input_test_case["inputs"]
             expected_printed_messages = input_test_case["printed_messages"]

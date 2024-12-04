@@ -1,6 +1,6 @@
 max_score = 10  # This value is pulled by yml_generator.py to assign a score to this test.
 from conftest import (normalize_text, load_student_code, format_error_message, exception_message_for_students, round_match, df_error_message_formatting,
-    normalize_dataframe, get_similarity_feedback, sqlite_db_exists, delete_sqlite_db, expected_database_name
+    normalize_dataframe, get_similarity_feedback, sqlite_db_exists, clear_database, expected_database_name
 )
 import re, subprocess, sys, sqlite3, pytest
 
@@ -14,7 +14,7 @@ def test_07_two_movies_updated_both(current_test_name, input_test_cases):
             return  # Technically not needed, as exception_message_for_students throws a pytest.fail Error, but included for clarity that this ends the test.
 
         input_test_case = input_test_cases[4]        
-        delete_sqlite_db()
+        clear_database('movie')
 
         inputs = input_test_case["inputs"]
 

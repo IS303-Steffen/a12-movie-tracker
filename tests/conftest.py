@@ -1283,3 +1283,18 @@ def normalize_dataframe(df):
     df = df.map(normalize_text)
     return df
 
+import sqlite3
+
+def clear_database(table_name):
+    try:
+        conn = sqlite3.connect(expected_database_name)
+        cursor = conn.cursor()
+        # Drop all tables (or specify which ones to drop)
+        cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+        # Alternatively, delete rows from a specific table
+        # cursor.execute("DELETE FROM your_table_name")
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error clearing the database: {e}")
+
