@@ -32,10 +32,10 @@ Enter all your code in the `a11_movie_tracker.py` file. Don't edit any of the ot
       Movie Tracker Menu:
       1. Add a movie to the watchlist
       2. View all movies
-      3. Update the status of a movie to `"Watched"` and provide a rating
-      4. View only watched movies with a rating of 4 or above
+      3. Update movie status to 'Watched' and provide a rating
+      4. View only watched movies with rating of 4 or above
       5. Delete a movie
-      6. Exit the program
+      6. Exit
       Choose an option (1-6):
       ```
 - The menu should repeatedly show after each option is chosen until option `6` is entered. If any other input is given, it should just display:
@@ -94,7 +94,7 @@ Enter all your code in the `a11_movie_tracker.py` file. Don't edit any of the ot
       ID: 1 | Name: Inception | Year: 2010 | Status: Watched | Rating: 5
       ID: 2 | Name: Pride & Prejudice | Year: 2006 | Status: Want to watch | Rating: None
       ```
-- To simplify the assignment, you can assume that option `2` will only be chosen when there are movies in the databases. If you want to add logic for handling the case of no movies being present for extra practice, feel free.
+- To simplify the assignment, you can assume that option `2` will only be chosen when there are movies in the database. If you want to add logic for handling the case of no movies being present for extra practice, feel free.
 
 #### Option 3: Update movie status to 'Watched' and rate
 - If the user enters `3`, it should prompt the user for a movie ID:
