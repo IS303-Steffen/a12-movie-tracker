@@ -1,3 +1,14 @@
+# Stuff prof steffen added
+*solution*.py
+*solution*.xlsx
+~$*.xlsx
+.vscode*
+student_test_module.py
+test_cases_table_output.html
+test_cases_drafts.json
+markdown_generated.md
+movies.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
