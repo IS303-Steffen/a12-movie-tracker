@@ -1,11 +1,11 @@
-#### Assignment 11
+#### Assignment
 # Movie Tracker
 
 The point of this assignment is to combine OOP with databases through object relational mapping (ORM) using the `peewee` library. You'll make a simple movie tracker app where the user can enter in movies that they want to watch. Once the movies are watched, they can mark a movie as watched and provide it with a rating.
 
 You can see a video example of the program <a href="https://www.youtube.com/watch?v=YJ6HeOos5JU&ab_channel=ProfSteffen" target="_blank">here.</a>
 
-Enter all your code in the `a11_movie_tracker.py` file. Don't edit any of the other files.
+Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the other files.
 
 ## Libraries Required
 - `peewee`
@@ -70,8 +70,8 @@ Enter all your code in the `a11_movie_tracker.py` file. Don't edit any of the ot
     - For a new movie to be created in the database, the year must:
         - Be exactly 4 digits long
         - Be between 1888 and the current year
-            - You can hardcode these values. For a small optional challenge, see if you can dynamically get the current year.
-        - To simplify the assignment, you can assume that the user will always enter in digits for the year (e.g. they will never enter letters like `bla bla`).
+            - You can hardcode these values. For a small optional challenge (e.g. for no extra points), see if you can dynamically get the current year.
+        - To simplify the assignment, you can assume that the user will always enter in digits for the year (e.g. they will never enter letters like `bla bla`. But if you want a little extra challenge, feel free to also handle non-digit inputs).
     - Example of valid year:
         - `1991`
     - Examples of invalid years:

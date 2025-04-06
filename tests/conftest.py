@@ -3,13 +3,29 @@ conftest.py is a configuration file automatically accessed by pytest
 any @pytest.fixture created here is available to any other test file
 if they reference it as a parameter.
 '''
+# =======
+# IMPORTS
+# =======
 
-import pytest, re, sys, os, json, traceback, pickle, inspect, multiprocessing, ast, importlib, difflib, copy, builtins
+import pytest, re, sys, os, json, traceback, pickle, inspect, multiprocessing, \
+       ast, importlib, difflib, copy, builtins
 from io import StringIO
 from collections.abc import Iterable
-from tests.test_cases.class_test_cases import test_cases_classes_dict
 from datetime import date, timedelta
-import importlib
+
+# ====================
+# LOCAL MODULE IMPORTS
+# ====================
+
+# Get the absolute path of the directory containing this script
+current_dir = os.path.dirname(__file__)
+
+# Construct the path to 'test_cases' and add it to sys.path
+test_cases_path = os.path.join(current_dir, "test_cases")
+sys.path.append(test_cases_path)
+
+from class_test_cases import test_cases_classes_dict # type: ignore
+from function_test_cases import test_cases_functions_dict # type: ignore
 
 
 # ================
@@ -17,8 +33,9 @@ import importlib
 # ================
 
 # Enter the name of the file to be tested here, but leave out the .py file extention.
-solution_module = "a11_solution_movie_tracker"
-student_module = "a11_movie_tracker"
+solution_module = "a12_solution_movie_tracker"
+student_module = "a12_movie_tracker"
+
 
 def detect_module(solution_module, student_module):
     if os.path.exists(f"{solution_module}.py"):
@@ -28,7 +45,6 @@ def detect_module(solution_module, student_module):
     else:
         return "PATH NOT FOUND"
 
-#default_module_to_test = "a6_function_smorgasbord"#detect_module(solution_module, student_module)
 default_module_to_test = detect_module(solution_module, student_module)
 
 # default per-test-case timeout amount in seconds:
@@ -46,6 +62,24 @@ CURRENT_DIR = os.path.dirname(__file__)
 
 expected_database_name = r"movies.db"
 
+
+# =============
+# VERSION CHECK
+# =============
+
+# ANSI escape codes for colors
+YELLOW_BOLD = "\033[1;33m"
+RESET = "\033[0m"
+
+def pytest_sessionstart(session):
+    """Print a warning if Python version is below 3.9."""
+    if sys.version_info < (3, 9):
+        print(
+            f"{YELLOW_BOLD}\n"
+            "⚠️ WARNING: You are running a version of Python < 3.9. These tests have only been tested with Python 3.9 and up, so some tests may not behave as expected!\n"
+            f"{RESET}"
+        )
+
 # ========
 # FIXTURES
 # ========
@@ -60,6 +94,10 @@ def input_test_cases():
         test_cases = json.load(f)
     
     return test_cases
+
+@pytest.fixture
+def function_test_cases():
+    return test_cases_functions_dict
 
 @pytest.fixture
 def class_test_cases(): 
@@ -265,13 +303,14 @@ def _load_student_code_subprocess(shared_data, current_test_name, inputs, input_
         test_case_inputs = '\n'.join(input_with_quotes)
         exception_data = {
             'type': type(e).__name__,
-            'message': (f"{str(e)}\n\n\nHOW TO FIX IT:\n"
+            'message': (f"HOW TO FIX IT:\n"
                         f"--------------\n"
                         f"This error was very likely caused by your code asking for more input() calls than the input test case expected. "
                         f"To see where this is happening in your code, run your code and input THESE EXACT INPUTS IN THIS ORDER (without the quotations):\n\n"
                         f"{test_case_inputs}\n\n"
-                        f"If, after entering those exact inputs in that order, your code asks for another input, THAT is the cause of this error. "
-                        f"Make it so your code doesn't ask for any more inputs after the last input entered. If you believe that is a mistake, please "
+                        f"Your code should end after all of those inputs have been entered. If, after entering those exact inputs in that order, your code asks for another input, THAT is the cause of this error. "
+                        f"You likely wrote an if statement or loop in a way that it is asking for inputs again. Make it so your code doesn't ask for any more inputs after the last input entered. "
+                        f"If you believe that is a mistake, please "
                         f"reach out to your professor."),
             'traceback': traceback.format_exception(exc_type, exc_value, exc_tb)
         }
@@ -569,11 +608,11 @@ def test_functions(function_tests, globals_dict, instance=None):
         if not func_found:
             exception_data = {
                     'type': 'Function not found',
-                    'message': (f"This test is looking specifically for the function/method '{func_name_original}' in {context},\n"
-                                f"But it couldn't find it, nor any of its accepted variations:\n{', '.join(function_variations[1:])}\n\n"
+                    'message': (f"This test is looking specifically for the function/method '{func_name_original}' in {context}, "
+                                f"But it couldn't find it, nor any of its accepted variations:\n\n{', '.join(function_variations[1:])}\n\n"
                                 f"Make sure you are spelling the function/method name correctly, and that you didn't name any other variables "
                                 f"in your code the exact same name as the function. Below are all of "
-                                f"the functions/methods that the test could find in {context}:\n{all_functions_names}"),
+                                f"the functions/methods that the test could find in {context}:\n\n{all_functions_names}"),
                     'custom_location': f'test_classes in conftest.py',
                     'detail': 'CLASS ERROR'
             }
@@ -604,6 +643,8 @@ def test_functions(function_tests, globals_dict, instance=None):
                     # first store the initial state of the object:
                         object_state = get_object_state(instance)
                         test_case.setdefault('final_obj_state', []).append(object_state)
+                
+                
 
             except Exception as e:
                 if len(args) > 0:
@@ -614,8 +655,9 @@ def test_functions(function_tests, globals_dict, instance=None):
                     init_args_str = "No arguments"
                 exception_data = {
                     'type': type(e).__name__,
-                    'message': (f"{type(e).__name__}: {e}\n\n"
-                                f"Your code gave the above error while trying to run {func_name_original}, with these arguments:\n\n"
+                    'message': (f"Your code gave the following error while trying to run the function {func_name_original}:\n\n"
+                                f"{type(e).__name__}: {e}\n\n"
+                                f"{func_name_original} was using these arguments when it ran into the error:\n\n"
                                 f"{func_name_original.upper()} ARGUMENTS:\n"
                                 f"{'-'*len(f'{func_name_original.upper()} ARGUMENTS:')}\n"
                                 f"{init_args_str}\n\n"
@@ -626,6 +668,7 @@ def test_functions(function_tests, globals_dict, instance=None):
                     'detail': 'FUNCTION ERROR'
                 }
                 test_case["FUNCTION ERROR"] = exception_data
+                function_results["FUNCTION ERROR"] = exception_data
                 return function_results
         else:
             exception_data = {
@@ -636,8 +679,11 @@ def test_functions(function_tests, globals_dict, instance=None):
                     'detail': 'FUNCTION ERROR'
                 }
             test_case["FUNCTION ERROR"] = exception_data
+            function_results["FUNCTION ERROR"] = exception_data
             return function_results
-
+        
+    # If no errors occured while trying to run the function and store its results, store those here
+    function_results['function_results'] = function_tests
     return function_results
 
 def update_object_from_dict(obj, update_dict):
@@ -794,7 +840,7 @@ def test_classes(class_tests, globals_dict):
                 method_test_cases = [method_test_case for method_test_case in class_test.get('method_test_cases') if method_test_case.get('function_name') == method_to_test]
 
                 function_results = test_functions(method_test_cases, globals_dict, instance=obj)
-                if function_results:
+                if function_results.get("FUNCTION ERROR"):
                     class_tests["FUNCTION ERROR"] = function_results
                 pass
                     
@@ -870,7 +916,7 @@ def format_error_message(custom_message: str = None,
     
     # some starting strings. All messages will be appended to error_message
     error_message = ''
-    divider = f"\n{"-"*line_length}\n"
+    divider = f"\n{'-'*line_length}\n"
     error_message += divider
     error_message += f"IS 303 STUDENTS: READ THE ERROR MESSAGES BELOW\n\n"
     error_message += "↓"*line_length + "\n"
@@ -884,7 +930,7 @@ def format_error_message(custom_message: str = None,
             f"\nINPUT TEST CASE DESCRIPTION: \"{input_test_case['input_test_case_description']}\"\n"
             f"\nFirst, read the error below. You can also see details for this test case in the 'descriptions_of_test_cases' folder in this repository.\n\n"
         ), line_length)
-        test_case_description = f"FOR INPUT TEST CASE: {input_test_case["id_input_test_case"]}"
+        test_case_description = f"FOR INPUT TEST CASE: {input_test_case['id_input_test_case']}"
     else:
         test_case_description = ''
 
@@ -983,7 +1029,7 @@ def exception_message_for_students(exception_data, input_test_case, current_test
     # at a glance by clearly separating the location of the error and the error itself.
     error_location = error_location.replace('File "<string>"', f"{default_module_to_test}.py" )
     error_location = error_location.replace(', in <module>', '' )
-    error_message = f"\n{error_type}: {error_message_str}"
+    error_message = f"\n{error_type}: {error_message_str}" if error_type != "StopIteration" else error_message_str
     error_location = error_location.replace(error_message, '')
     
     display_inputs_option = False
@@ -995,40 +1041,55 @@ def exception_message_for_students(exception_data, input_test_case, current_test
         input_test_case = {'id_input_test_case': None}
         input_test_case['input_test_case_description'] =  "No input test case for this test."
 
+    if error_type == "StopIteration":
+        custom_message = (f"While trying to run {current_test_name}, the automated test couldn't complete because your code "
+            f"called an input() function more times than it should have.\n\n"
+            f"{error_message}\n\n")
 
+        formatted_message = format_error_message( 
+                                custom_message=custom_message,
+                                current_test_name=current_test_name,
+                                input_test_case=input_test_case)
 
-    if error_type == "StopIteration" or error_detail in ["CLASS ERROR", "FUNCTION ERROR"]:
-        pytest.fail(f"{format_error_message(
-            custom_message=(f"While trying to run {current_test_name}, python ran into an error.\n\n"
-                            f"LOCATION OF ERROR:\n"
-                            f"------------------"
-                            f"\n{error_location}\n\n"
-                            f"ERROR MESSAGE:\n"
-                            f"--------------"
-                            f"{error_message}\n\n"),
-            current_test_name=current_test_name,
-            input_test_case=input_test_case,
-            )}")
+        pytest.fail(formatted_message)
+
+    elif error_detail in ["CLASS ERROR", "FUNCTION ERROR"]:
+        custom_message = (f"While trying to run {current_test_name}, python ran into an error.\n\n"
+            f"LOCATION OF ERROR:\n"
+            f"------------------"
+            f"\n{error_location}\n\n"
+            f"ERROR MESSAGE:\n"
+            f"--------------"
+            f"{error_message}\n\n")
+        
+        formatted_message = format_error_message(
+                                custom_message=custom_message,
+                                current_test_name=current_test_name,
+                                input_test_case=input_test_case)
+
+        pytest.fail(formatted_message)
     else:
-        # Call pytest.fail with the formatted error message
-        pytest.fail(f"{format_error_message(
-            custom_message=(f"While trying to run {current_test_name}, python ran into an error.\n\n"
-                            f"LOCATION OF ERROR:\n"
-                            f"------------------\n"
-                            f"{error_location}\n\n"
-                            f"ERROR MESSAGE:\n"
-                            f"--------------\n"
-                            f"{error_message}\n\n"
-                            f"HOW TO FIX IT:\n"
-                            f"--------------\n"
-                            f"If the error occurred in {default_module_to_test}.py or another .py file that you wrote, set a breakpoint at the location in that file where "
-                            f"the error occurred and see if you can repeat the error by running your code using the inputs for Test Case {input_test_case['id_input_test_case']}. "
-                            f"That should help you see what went wrong.\n\n"
-                            f"If the error occurred in a different file, reach out to your professor.\n\n"),
+        custom_message = (f"While trying to run {current_test_name}, python ran into an error.\n\n"
+            f"LOCATION OF ERROR:\n"
+            f"------------------\n"
+            f"{error_location}\n\n"
+            f"ERROR MESSAGE:\n"
+            f"--------------\n"
+            f"{error_message}\n\n"
+            f"HOW TO FIX IT:\n"
+            f"--------------\n"
+            f"If the error occurred in {default_module_to_test}.py or another .py file that you wrote, set a breakpoint at the location in that file where "
+            f"the error occurred and see if you can repeat the error by running your code using the inputs for Test Case {input_test_case['id_input_test_case']}. "
+            f"That should help you see what went wrong.\n\n"
+            f"If the error occurred in a different file, reach out to your professor.\n\n")
+        
+        formatted_message = format_error_message(
+            custom_message=custom_message,
             current_test_name=current_test_name,
             input_test_case=input_test_case,
-            display_inputs=display_inputs_option
-            )}")
+            display_inputs=display_inputs_option)
+        # Call pytest.fail with the formatted error message
+        pytest.fail(formatted_message)
 
 def timeout_message_for_students(input_test_case, current_test_name):
     """
@@ -1047,7 +1108,7 @@ def timeout_message_for_students(input_test_case, current_test_name):
                                 f"HOW TO FIX IT:\n"
                                 f"--------------\n"
                                 f"You got a Timeout Error, meaning this Input Test Case didn't complete after {default_timeout_seconds} seconds. "
-                                f"The test timed out during Input Test Case {input_test_case["id_input_test_case"]}. To try and identify the problem, run your code like normal, but enter these EXACT inputs "
+                                f"The test timed out during Input Test Case {input_test_case['id_input_test_case']}. To try and identify the problem, run your code like normal, but enter these EXACT inputs "
                                 f"in this order (without the quotes):\n\n"
                                 f"{test_case_inputs}\n\n"
                                 f"Most likely, "
@@ -1219,9 +1280,8 @@ def get_similarity_feedback(normalized_expected_phrase, normalized_captured_stri
         similarity_threshold (float): The minimum similarity ratio to consider a close match.
         
     Returns:
-        str: A feedback message with close matches or a message indicating no similar strings were found.
+        str: A feedback message with close matches sorted by similarity or a message indicating no similar strings were found.
     """
-    
     # Check for an exact match
     if normalized_expected_phrase in normalized_captured_strings_list:
         return f"Exact match found for expected phrase: \"{normalized_expected_phrase}\""
@@ -1233,15 +1293,18 @@ def get_similarity_feedback(normalized_expected_phrase, normalized_captured_stri
         similarity = difflib.SequenceMatcher(None, normalized_expected_phrase, captured_string).ratio()
         
         if similarity >= similarity_threshold:
-            
             diff = difflib.ndiff([normalized_expected_phrase], [captured_string])
             diff_string = '\n'.join(diff)
-            similar_strings.append(f"Similarity: {similarity:.2f}\nDifferences (expected vs. actual):\n{diff_string}")
+            similar_strings.append((similarity, f"Similarity: {similarity:.2f}\nDifferences (expected vs. actual):\n{diff_string}"))
+    
+    # Sort similar strings by similarity score in descending order
+    similar_strings.sort(reverse=True, key=lambda x: x[0])
+    
     # Construct feedback message
     if similar_strings:
         feedback_message = (
-            "Here are the closest matches to the expected phrase:\n\n"
-            + "\n\n".join(similar_strings)
+            "Here are the closest matches to the expected phrase (sorted by similarity):\n\n"
+            + "\n\n".join(item[1] for item in similar_strings)
         )
     else:
         feedback_message = (
