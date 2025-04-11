@@ -103,7 +103,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
     - `Enter your rating (1-5): `
 - Your program should then call a custom method called `rate_movie` on the `Movie` object corresponding to the ID entered. `rate_movie` should have a parameter for the rating. It should update the `Movie` object's `status` to "Watched" and the `rating` to whatever rating was entered, and then save the updated values to the database.
     - it should also print out a message like this:
-    - `Movie '<movie name>' updated to 'Watched' with rating <rating number>.`
+        - `Movie '<movie name>' updated to 'Watched' with rating <rating number>.`
 - To simplify the assignment, you can assume that the user will always enter in a valid, existing movie ID and a valid rating between 1 and 5. If you want to add logic for error handling those situations for extra practice, feel free.
 
 #### Option 4: View watched movies with a rating of 4 or above.
