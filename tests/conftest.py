@@ -223,9 +223,13 @@ def _load_student_code_subprocess(shared_data, current_test_name, inputs, input_
             'input': mock_input,     # Overrides input() in the student's code
         }
 
-        # Override exit and sys.exit to prevent termination
-        builtins.exit = lambda *args: (_ for _ in ()).throw(ExitCalled("exit() called"))
-        sys.exit = lambda *args: (_ for _ in ()).throw(ExitCalled("sys.exit() called"))
+        # Override exit, quit, and sys.exit to prevent termination
+        def override_exit_functions(*args):
+            raise ExitCalled("sys.exit, exit, or quit was called.")
+
+        builtins.exit = override_exit_functions
+        sys.exit = override_exit_functions
+        builtins.quit = override_exit_functions
 
         # Prepare to capture 'main' function's locals
         main_locals = {}
