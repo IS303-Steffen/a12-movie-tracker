@@ -16,7 +16,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
 - Details described in the logical flow section. This needs to inherit from the `peewee` `Base` class.
 
 ## Logical Flow:
-#### Set Up the Database and ORM Structure:
+### Set Up the Database and ORM Structure:
 - Using the `peewee` library, create a SQLite database called `movies.db` and define a `Movie` class that inherits from the `peewee` `Model` class.
 - Define the `Movie` model with the following fields:
     - `id`: Auto-incrementing integer (Primary Key)
@@ -26,7 +26,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
     - `rating`: Rating of the movie (optional on creation, meaning null=True) (IntegerField)
 - Use proper `peewee` methods so that the database is created with the `Movie` table (or connected if it already exists) when your code is run.
 
-#### Menu Options:
+### Menu Options:
 - Design a menu with the following options (instructions for each option will be given after):
     - ```
       Movie Tracker Menu:
@@ -42,7 +42,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
     - `Invalid choice. Please choose again.`
 - And then display the menu again.
 
-#### Option 1: Add a movie to the watchlist
+### Option 1: Add a movie to the watchlist
 - If the user enters `1`, it should prompt the user to enter a movie name, and then the year released:
     - `Enter the movie name: `
     - `Enter the year released: `
@@ -84,7 +84,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
 
     
 
-#### Option 2: View all movies
+### Option 2: View all movies
 - If the user enters `2`, it should print out the movie information for every movie in your `movies.db` database.
 - To do this, add a method called `get_info` to your `Movie` class. It should return a string like this:
     - `ID: <id> | Name: <movie name> | Year: <year released> | Status: <movie status> | Rating: <movie_rating>`
@@ -96,7 +96,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
       ```
 - To simplify the assignment, you can assume that option `2` will only be chosen when there are movies in the database. If you want to add logic for handling the case of no movies being present for extra practice, feel free.
 
-#### Option 3: Update movie status to 'Watched' and rate
+### Option 3: Update movie status to 'Watched' and rate
 - If the user enters `3`, it should prompt the user for a movie ID:
     - `Enter the ID of the movie you've watched: `
 - It should then prompt the user for a rating:
@@ -106,7 +106,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
         - `Movie '<movie name>' updated to 'Watched' with rating <rating number>.`
 - To simplify the assignment, you can assume that the user will always enter in a valid, existing movie ID and a valid rating between 1 and 5. If you want to add logic for error handling those situations for extra practice, feel free.
 
-#### Option 4: View watched movies with a rating of 4 or above.
+### Option 4: View watched movies with a rating of 4 or above.
 - If the user enters `4`, it should do the exact same thing as option `2`, but only for movies that have a `rating` value of 4 or above.
 - For example, if you had one movie rated at a 4 or more, it would just display that movie:
     - ```
@@ -114,7 +114,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
       ```
 - To simplify the assignment, you can assume that option `4` will only be chosen when there is at least 1 movie with a rating of 4 or above. If you want to add logic for handling the case of no movies being present for extra practice, feel free.
 
-#### Option 5: Delete a movie
+### Option 5: Delete a movie
 - If the user enters `5` it should prompt the user:
     - `Enter the ID of the movie to delete: `
 - After a movie ID is entered, it should delete the movie from the database and print out:
@@ -126,7 +126,7 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
       ```
 - To simplify the assignment, you can assume that the user always enter in a valid existing id when trying to delete. If you want to add logic for error handling those situations for extra practice, feel free.
 
-#### Option 6: Exit
+### Option 6: Exit
 - If the user enters `6` then it should print:
     - `Goodbye!`
 - Then the program should end.
@@ -134,7 +134,11 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
 Push your code up to your GitHub repository to receive credit. If you pass all the automated tests you will receive full credit.
 
 ## Grading Rubric
-See `Rubric.md`
+- See `RUBRIC.md` for details on each of the tests you're scored on.
+- To see what score you'll receive, run the tests using the testing tab (it looks like a beaker).
+    - In the testing tab, press `Configure Python Tests`, then choose `pytest`, then `tests`, and then press the `Run Tests` button.
+        - If you accidentally choose the wrong options for `Configure Python Tests`, to choose again, go to `View` > `Command Palette` and then type `Python: Configure Tests` and hit enter. Then choose the options above again.
+- To see your results and any error messages, right click the `TEST_RESULTS_SUMMARY.md` file and choose `Open Preview`.
 
 ## Example Output
 See a video example <a href="https://www.youtube.com/watch?v=YJ6HeOos5JU&ab_channel=ProfSteffen" target="_blank">here.</a>

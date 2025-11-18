@@ -8,6 +8,8 @@ test_cases_table_output.html
 test_cases_drafts.json
 markdown_generated.md
 movies.db
+test_scores.csv
+TEST_RESULTS_SUMMARY.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -133,7 +135,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/

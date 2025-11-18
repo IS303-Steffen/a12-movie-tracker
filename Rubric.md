@@ -21,7 +21,7 @@ The tests will ignore spacing, capitalization, and punctuation, but you will fai
         Your input prompts must be the same as the expected input prompts of each input test case. 
         <br>
         <br>
-        See the <code>descriptions_ot_test_cases</code> folder for expected input prompts for each input test case.
+        See the <code>descriptions_of_test_cases</code> folder for expected input prompts for each input test case.
         </td>
         <td style="text-align: center">5</td>
     </tr>
@@ -32,7 +32,7 @@ The tests will ignore spacing, capitalization, and punctuation, but you will fai
         Your printed output must be the same as the expected output of each input test case. 
         <br>
         <br>
-        See the <code>descriptions_ot_test_cases</code> folder for expected printed messages for each input test case.
+        See the <code>descriptions_of_test_cases</code> folder for expected printed messages for each input test case.
         </td>
         <td style="text-align: center">15</td>
     </tr>
