@@ -11,9 +11,8 @@ Enter all your code in the `a12_movie_tracker.py` file. Don't edit any of the ot
 - `peewee`
 
 ## Classes Required
-
-#### Movie
-- Details described in the logical flow section. This needs to inherit from the `peewee` `Base` class.
+- `Movie`
+    - Details described in the logical flow section. This needs to inherit from the `peewee` `Model` class.
 
 ## Logical Flow:
 ### Set Up the Database and ORM Structure:
