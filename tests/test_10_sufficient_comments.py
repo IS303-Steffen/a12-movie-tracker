@@ -26,7 +26,7 @@ def test_15_sufficient_comments(current_test_name):
 
         for module in modules_to_open:
             # Open and read the student's script as a string
-            with open(f"{module}.py", "r") as file:
+            with open(f"{module}.py", "r", encoding="utf-8", errors="replace") as file:
                 script_content = file.read()
 
             # Find all matches for comments
